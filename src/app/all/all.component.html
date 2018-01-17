@@ -1,0 +1,26 @@
+<div class="container">
+  <h1>People List
+    <a class="btn btn-info btn-lg" routerLink="/addPerson">Add new Person</a>
+    <button *ngIf="users.length" class="btn btn-danger btn-lg" (click)="generateFriends()">Generate Friends</button>
+  </h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>E-mail</th>
+        <th>Secret Santa</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.secretSanta ? user.secretSanta : "Not in group yet" }}</td>
+        <td>
+          <a class="btn btn-secondary" [routerLink]="['/personDetails', user._id]">Show Detail</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

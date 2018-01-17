@@ -42,4 +42,58 @@ router.get('/users', (req, res) => {
     });
 });
 
+// Get User
+router.get('/users/:id', function (req, res, next) {
+    connection((db) => {
+        db.collection('users')
+            .find({ "_id": ObjectID(req.params.id) })
+            .toArray()
+            .then((user) => {
+                response.data = user[0];
+                res.json(response);
+            })
+            .catch((err) => {
+                sendError(err, res);
+            });
+    });
+});
+
+
+// Add Users
+router.post('/users', function (req, res, next) {
+    connection((db) => {
+        db.collection('users')
+            .insert(req.body, function (err, post) {
+                if (err) return next(err);
+                res.json(post);
+            });
+    });
+});
+
+// Edit User
+router.put('/users/:id', function (req, res, next) {
+    connection((db) => {
+        db.collection('users')
+            .update(
+            { "_id": ObjectID(req.params.id) },
+            req.body,
+            function (err, post) {
+                if (err) return next(err);
+                res.json(post);
+            });
+    });
+});
+
+//Remove User
+router.delete('/users/:id', function (req, res, next) {
+    connection((db) => {
+        db.collection('users')
+            .remove({ "_id": ObjectID(req.params.id) },
+            function (err, post) {
+                if (err) return next(err);
+                res.json(post);
+            });
+    });
+});
+
 module.exports = router;
