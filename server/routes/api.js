@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Connect
 const connection = (closure) => {
@@ -65,6 +67,14 @@ router.post('/users', function (req, res, next) {
         db.collection('users')
             .insert(req.body, function (err, post) {
                 if (err) return next(err);
+                const msg = {
+                    to: 'pablo.bizzi@gmail.com',
+                    from: 'pablo.bizzi@apponteweb.com',
+                    subject: 'Sending with SendGrid is Fun',
+                    text: 'and easy to do anywhere, even with Node.js',
+                    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+                };
+                sgMail.send(msg);
                 res.json(post);
             });
     });
