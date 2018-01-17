@@ -67,14 +67,6 @@ router.post('/users', function (req, res, next) {
         db.collection('users')
             .insert(req.body, function (err, post) {
                 if (err) return next(err);
-                const msg = {
-                    to: 'pablo.bizzi@gmail.com',
-                    from: 'pablo.bizzi@apponteweb.com',
-                    subject: 'Sending with SendGrid is Fun',
-                    text: 'and easy to do anywhere, even with Node.js',
-                    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-                };
-                sgMail.send(msg);
                 res.json(post);
             });
     });
@@ -89,6 +81,9 @@ router.put('/users/:id', function (req, res, next) {
             req.body,
             function (err, post) {
                 if (err) return next(err);
+                if(req.body.secretSanta){
+                    sendMail(req.body.email, req.body.secretSanta);
+                }
                 res.json(post);
             });
     });
@@ -105,5 +100,16 @@ router.delete('/users/:id', function (req, res, next) {
             });
     });
 });
+
+function sendMail(mailTo, secretSanta) {
+    const msg = {
+        to: mailTo,
+        from: 'pablo.bizzi@gmail.com',
+        subject: 'Your secret santa is...',
+        // text: 'and easy to do anywhere, even with Node.js',
+        html: "<strong>Your secret santa is: " + secretSanta + "</strong>",
+    };
+    sgMail.send(msg);
+}
 
 module.exports = router;
